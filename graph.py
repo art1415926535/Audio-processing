@@ -1,24 +1,38 @@
 import datetime
 from logging import critical
 
-import matplotlib.pyplot as plt
 from PIL import Image, ImageDraw
 
 
-def create_2d_graph(array, path='/img/', name=None):
+def create_2d_graph(array, path='/img/', name=None,
+                    fill=(0, 0, 255, 255), outline=(0, 0, 0, 255)):
+    try:
+        width = len(array)
+        height = 100  # len(array[0])
+    except TypeError:
+        critical('NEED ARRAY')
+        return None
+
+    # create image
+    image = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(image)
+
+    max_y = max(array)
+    points = [(x, y / max_y * height) for y, x in zip(array, range(len(array)))]
+    points.append((width, height))
+    points.append((0, height))
+
+    draw.polygon(points, fill=fill, outline=outline)
+
+    del draw
+
     if name is None:
         name = datetime.datetime.now().time().isoformat()[:-7]  # -msec
+    full_path = path + name + '.png'
 
-    plt.axes().get_xaxis().set_visible(False)  # del labels
-    plt.axes().get_yaxis().set_visible(False)  # del labels
-    plt.tight_layout()  # del gray area around plot
+    image.save(full_path, "PNG")
 
-    plt.plot(array)  # , interpolation='none')
-
-    p = path + name + '.png'
-    plt.savefig(p, dpi=100, bbox_inches='tight', pad_inches=0)
-
-    return p
+    return full_path
 
 
 def create_3d_graph(array, path='/img/', name=None):
@@ -27,11 +41,23 @@ def create_3d_graph(array, path='/img/', name=None):
         height = len(array[0])
     except TypeError:
         critical('NEED 2D ARRAY')
-        return 1
+        return None
 
     # create image
     image = Image.new("RGBA", (width, height), (0, 0, 0, 0))
     draw = ImageDraw.Draw(image)
+
+    a = []
+    for i in array:
+        for j in i:
+            a.append(j)
+
+    max_z = max(a)
+
+    for row in range(len(array)):
+        for cell in range(len(array[0])):
+            draw.point((row, cell),
+                       (int(array[row][cell] / max_z * 255), 0, 0, 255))  # FIXME:  array[row][cell] to NORMAL
 
     del draw
 
@@ -47,17 +73,20 @@ if __name__ == '__main__':
     import random
     import time
 
-    '''
-    t_rand = time.time()
-    width = 300
-    height = 900
-    z = [[random.randint(0, 30) for _ in range(width)]] * (height // 3) + \
-        [[random.randint(0, 30) for _ in range(width)]] * (height // 3) + \
-        [[random.randint(0, 30) for _ in range(width)]] * (height // 3)
-    print("t rand:", time.time() - t_rand)
-    print(len(z), len(z[0]))
-    '''
-    z = [random.randint(0, 100) / 100 * x for x in range(2000)]
+    y_points = 40000
+    y = [random.randint(0, 100) / 100 * x for x in range(y_points)]
+
+    z_points = 4000
+    z = []
+    n = random.randint(3, 200)
+    for i in range(n):
+        z += [[random.randint(0, 100) / 100 * x for x in range(100)]] * (z_points // n)
+
+
     t_graph = time.time()
-    create_2d_graph(z, '', 'foo')
-    print('time creating graph:', time.time() - t_graph)
+    create_2d_graph(y, '', 'foo')
+    print('time creating 2d graph:{} with {} points'.format(time.time() - t_graph, y_points))
+
+    t_graph = time.time()
+    create_3d_graph(z, '', 'foo')
+    print('time creating 3d graph:{} with {} points'.format(time.time() - t_graph, z_points * 100))
