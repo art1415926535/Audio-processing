@@ -54,10 +54,29 @@ def create_3d_graph(array, path='/img/', name=None):
 
     max_z = max(a)
 
+    def rgba(x):
+        x = x / max_z * (255 * 3)
+        # r  g  b   a
+        color = [0, 0, 0, 255]
+        for i in [2, 0, 1]:
+            if x > 0:
+                if x > 255:
+                    color[i] = int(255)
+                elif x < 0:
+                    color[i] = int(0)
+                else:
+                    color[i] = int(x)
+
+                x -= 255
+
+            if color[0] > 0:
+                color[2] = 255 - color[0]
+
+        return tuple(color)
+
     for row in range(len(array)):
         for cell in range(len(array[0])):
-            draw.point((row, cell),
-                       (int(array[row][cell] / max_z * 255), 0, 0, 255))  # FIXME:  array[row][cell] to NORMAL
+            draw.point((row, cell), rgba(array[row][cell]))
 
     del draw
 
@@ -78,7 +97,7 @@ if __name__ == '__main__':
 
     z_points = 4000
     z = []
-    n = random.randint(3, 200)
+    n = random.randint(100, 300)
     for i in range(n):
         z += [[random.randint(0, 100) / 100 * x for x in range(100)]] * (z_points // n)
 
