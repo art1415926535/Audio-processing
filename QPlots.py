@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QWidget, QFrame, QSizePolicy
 from PyQt5.QtGui import QImage, QPainter, QPen, QColor
+from PyQt5.QtCore import QByteArray
 
 
 class Plots(QFrame):
@@ -26,8 +27,31 @@ class Plots(QFrame):
                        height=height,
                        QImage.Format_ARGB32_Premultiplied)
         '''  # TODO: затычко
+        z_points = 10000
+        z = []
+        import random
 
-        graph = QImage(data)
+        n = random.randint(z_points / 5, z_points)
+        for i in range(n):
+            z += [[random.randint(0, 100) / 100 * x for x in range(200)]] * (z_points // n)
+
+        data = z
+        q_byte_array = QByteArray()
+        print(len(data), len(data[0]))
+        if type(data[0]) == list:
+            for row in range(len(data[0])):
+                for cell in range(len(data)):
+                    rgba = self.__rgba(data[cell][row], 100)
+                    for c in rgba[::-1]:
+                        if not c:
+                            q_byte_array.append(chr(1))
+                        else:
+                            q_byte_array.append(chr(c))
+
+        graph = QImage(q_byte_array, len(data), len(data[0]), 5)
+        print(graph.height(), graph.width(), graph.bytesPerLine())
+
+
         if number is None:
             self.__plots.append(graph)
         else:
@@ -52,7 +76,7 @@ class Plots(QFrame):
         #
         # painter.drawLine(self.width()*(1-self.percent), self.height()*self.percent,
         #                  self.width()*self.percent, self.height()*(1-self.percent))
-        accumulator_y = 0
+        accumulator_y = 10
 
         for i in range(len(self.__plots)):
             painter.drawImage(self.width() // 2 - self.__plots[i].width() * self.percent, accumulator_y,
@@ -75,3 +99,23 @@ class Plots(QFrame):
             self.__percent = p
         else:
             raise IndexError
+
+    def __rgba(self, x, max_z):
+        x = x / max_z * (255 * 3)
+        # r  g  b   a
+        color = [0, 0, 0]
+        for i in [2, 0, 1]:
+            if x > 0:
+                if x > 255:
+                    color[i] = int(255)
+                elif x < 0:
+                    color[i] = int(0)
+                else:
+                    color[i] = int(x)
+
+                x -= 255
+
+            if color[0] > 0:
+                color[2] = 255 - color[0]
+
+        return [255] + color
