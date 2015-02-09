@@ -4,6 +4,7 @@ from PyQt5 import QtGui, QtCore, uic, QtWidgets
 import PyQt5.QtCore as C
 import PyQt5.QtMultimedia as M
 
+import QPlots
 from syntax_pars import PythonHighlighter as Parser
 
 
@@ -12,7 +13,6 @@ class Window(QtWidgets.QWidget):
         QtWidgets.QWidget.__init__(self, parent)
         uic.loadUi('gui_beat.ui', self)
         self.scene = QtWidgets.QGraphicsScene()
-        self.graphicsView.setScene(self.scene)
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         self.app = app
 
@@ -23,9 +23,19 @@ class Window(QtWidgets.QWidget):
         self.play = False
         self.track = 'music/The Game.mp3'
 
-        self.qt_player.positionChanged.connect(self.rewind)
+        self.qt_player.positionChanged.connect(self.pos_changed)
 
         self.track_slider.valueChanged.connect(self.rewind_mouse)
+        # />
+
+        # <plots
+
+        self.plots = QPlots.Plots()
+        self.plots_layout.addWidget(self.plots)
+
+        # self.plots.add_data('img/1.jpg')
+        self.plots.add_data('foo.png')
+        # self.plots.add_data('img/1.jpg')
         # />
 
         self.play_pause_button.clicked.connect(self.play_pause)
@@ -58,6 +68,11 @@ class Window(QtWidgets.QWidget):
 
         self.fullscreen_button.clicked.connect(self.fullscreen)
         self.windowed = True
+
+
+    def pos_changed(self):
+        self.rewind(self.qt_player.position())
+        self.plots.update(self.qt_player.position() / self.qt_player.duration())
 
     def add_label(self):
         self.labels.append(QtWidgets.QLabel('Label ' + str(len(self.labels))))
@@ -111,7 +126,6 @@ class Window(QtWidgets.QWidget):
             self.time_of_track_label.setText(str(x // 1000))  # millisec > sec
             self.track_slider.setValue(x / self.qt_player.duration() * self.track_slider.maximum())
 
-        self.move_line(self.track_slider.value())
 
     def rewind_mouse(self, x):
         maximum = self.track_slider.maximum()
@@ -123,7 +137,6 @@ class Window(QtWidgets.QWidget):
             print(d_pos, self.qt_player.position())
             print(self.play)
 
-
     def load(self, path):
         self.play_pause_button.setEnabled(True)
         if not path:
@@ -132,6 +145,8 @@ class Window(QtWidgets.QWidget):
             self.track = path
 
         self.title_window_label.setText(self.track)
+
+        self.plots.update()
 
         print('play', self.track)
         url = C.QUrl.fromLocalFile(self.track)
@@ -186,5 +201,4 @@ if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     window = Window(app)
     window.show()
-    window.add_line()
     app.exec()
