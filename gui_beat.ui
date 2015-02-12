@@ -48,10 +48,14 @@ font-family: RobotoDraft, 'Helvetica Neue', Helvetica, Arial;</string>
     <widget class="QWidget" name="top_2" native="true">
      <property name="styleSheet">
       <string notr="true">QWidget{
-background-color: rgb(66, 211, 239);
-border: none;
 
+  background-color: qlineargradient(spread:reflect, x1:1, y1:0, x2:1, y2:1, stop:0 rgba(210, 210, 210, 255), stop:1 rgba(198, 198, 198, 255))
 }
+
+QWidget:active{
+	background-color:  qlineargradient(spread:reflect, x1:1, y1:0, x2:1, y2:1, stop:0.125 rgba(38, 220, 214, 255), stop:1 rgba(138, 200, 200, 255))
+}
+
 QPushButton{
   border: none;
 }
@@ -600,14 +604,105 @@ background: #eee;
       <number>8</number>
      </property>
      <item>
-      <layout class="QVBoxLayout" name="plots_layout">
-       <property name="spacing">
-        <number>8</number>
+      <widget class="QScrollArea" name="scrollArea">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
        </property>
-       <property name="rightMargin">
+       <property name="styleSheet">
+        <string notr="true">QWidget{
+background: #ccc;
+}
+
+
+    QScrollBar:vertical {
+        background: #fff;
+        width: 15px;
+    }
+    QScrollBar::handle:vertical {
+        background:rgba(38, 220, 214, 255);
+        min-height: 15px;
+    }
+    QScrollBar::add-line:vertical {
+        background: #fff;
+        height: 15px;
+    }
+    QScrollBar::sub-line:vertical {
+        background: #fff;
+        height: 15px;
+    }
+
+
+    QScrollBar:horizontal {
+        background: #fff;
+        height: 15px;
+    }
+    QScrollBar::handle:horizontal {
+        background: rgba(38, 220, 214, 255);
+        min-width: 15px;
+    }
+    QScrollBar::add-line:horizontal {
+        background: #fff;
+        width: 15px;
+    }
+    QScrollBar::sub-line:horizontal {
+        background: #fff;
+        width: 15px;
+    }
+</string>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <property name="lineWidth">
+        <number>1</number>
+       </property>
+       <property name="midLineWidth">
         <number>0</number>
        </property>
-      </layout>
+       <property name="verticalScrollBarPolicy">
+        <enum>Qt::ScrollBarAsNeeded</enum>
+       </property>
+       <property name="horizontalScrollBarPolicy">
+        <enum>Qt::ScrollBarAsNeeded</enum>
+       </property>
+       <property name="widgetResizable">
+        <bool>true</bool>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+       <widget class="QWidget" name="scrollAreaWidgetContents_3">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>60</width>
+          <height>448</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <layout class="QVBoxLayout" name="plots_layout">
+           <property name="spacing">
+            <number>5</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+      </widget>
      </item>
      <item>
       <layout class="QVBoxLayout" name="editors">
