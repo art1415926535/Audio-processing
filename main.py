@@ -30,11 +30,15 @@ class Window(QtWidgets.QWidget):
 
         # <plots
 
-        self.plots = QPlots.Plots()
-        self.plots_layout.addWidget(self.plots)
+        self.plots = [QPlots.Plots(), QPlots.Plots(), QPlots.Plots()]
+        self.plots_layout.addWidget(self.plots[0])
+        self.plots_layout.addWidget(self.plots[1])
+        self.plots_layout.addWidget(self.plots[2])
 
         # self.plots.add_data('img/1.jpg')
-        self.plots.add_data('foo.png')
+        self.plots[0].add_data('foo.png')
+        self.plots[1].add_data('foo.png')
+        self.plots[2].add_data('foo.png')
         # self.plots.add_data('img/1.jpg')
         # />
 
@@ -72,7 +76,8 @@ class Window(QtWidgets.QWidget):
 
     def pos_changed(self):
         self.rewind(self.qt_player.position())
-        self.plots.update(self.qt_player.position() / self.qt_player.duration())
+        for plot in self.plots:
+            plot.update(self.qt_player.position() / self.qt_player.duration())
 
     def add_label(self):
         self.labels.append(QtWidgets.QLabel('Label ' + str(len(self.labels))))
@@ -116,16 +121,9 @@ class Window(QtWidgets.QWidget):
 
     # sssssssssssssssssssssssssssssssssPLAYERssssssssssssssssssssssssssssssssssssss
     def rewind(self, x):
-        # print(self.track_slider.value() / self.track_slider.maximum() * self.qt_player.duration() - 1000,
-        # x,
-        #       self.track_slider.value() / self.track_slider.maximum() * self.qt_player.duration() + 1000,
-        #       self.track_slider.value() / self.track_slider.maximum() * self.qt_player.duration() - 1000 <
-        #       x
-        #       < self.track_slider.value() / self.track_slider.maximum() * self.qt_player.duration() + 1000)
         if not self.track_slider.isSliderDown():
             self.time_of_track_label.setText(str(x // 1000))  # millisec > sec
             self.track_slider.setValue(x / self.qt_player.duration() * self.track_slider.maximum())
-
 
     def rewind_mouse(self, x):
         maximum = self.track_slider.maximum()
@@ -146,7 +144,8 @@ class Window(QtWidgets.QWidget):
 
         self.title_window_label.setText(self.track)
 
-        self.plots.update()
+        for plot in self.plots:
+            plot.update()
 
         print('play', self.track)
         url = C.QUrl.fromLocalFile(self.track)
