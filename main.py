@@ -80,13 +80,10 @@ class Window(QtWidgets.QWidget):
             plot.update(self.qt_player.position() / self.qt_player.duration())
 
     def add_label(self):
-        self.labels.append(QtWidgets.QLabel('Label ' + str(len(self.labels))))
-        self.labels_layout.addWidget(self.labels[-1])
-        # self.labels[-1].clicked.connect(self.del_label)
+        pass
 
     def del_label(self):
-        if self.labels:
-            self.labels_layout.removeWidget(self.labels.pop())
+        pass
 
     def fullscreen(self, full=False):
         if self.windowed or full:
