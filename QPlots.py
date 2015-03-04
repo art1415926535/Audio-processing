@@ -1,19 +1,27 @@
 from time import time
 
-from PyQt5.QtWidgets import QWidget, QFrame, QSizePolicy
+from PyQt5.QtWidgets import QWidget, QFrame, QSizePolicy, QApplication
 from PyQt5.QtGui import QImage, QPainter, QPen, QColor
 from PyQt5.QtCore import QByteArray, Qt
+
+import styleSheets
 
 
 def test_spectrum(function):
     def decorated(self, *args, **kwargs):
-        count_numbers = 10000
-        max_number = 10
-        data = []
         import random
 
+        count_numbers = 1000  # random.randint(500, 1500)
+        max_number = 100
+        data = []
+
+        # if random.randint(0, 1):
+        # from math import sin
+        #     for i in range(count_numbers):
+        #         data += [[x * random.normalvariate(0.9, 0.1)*sin(x*random.normalvariate(0.95, 0.05)/10)**2 for x in range(max_number)]]
+        # else:
         for i in range(count_numbers):
-            data += [[x * random.normalvariate(0.9, 0.1) for x in range(max_number)]] * (count_numbers // count_numbers)
+            data += [[int(x * random.normalvariate(0.9, 0.1)) for x in range(max_number)]]
 
         t = time()
         function(self, data, max_number)
@@ -25,31 +33,48 @@ def test_spectrum(function):
     return decorated
 
 
+def rgba(x, max_x):
+    x = x * 765 // max_x
+    # r  g  b
+    color = [1, 1, 1]
+    for i in (2, 0, 1):
+        if x > 255:
+            color[i] = 255
+        elif x > 0:
+            color[i] = x
+
+        x -= 255
+
+    if color[0] > 1:
+        color[2] = 256 - color[0]
+
+    return [255] + color
+
+
 class Plots(QFrame):
     def __init__(self, parent=None):
         QWidget.__init__(self, parent)
 
         self.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
-        self.setMinimumHeight(42)
-        self.setMaximumHeight(9000)
+        self.setMinimumHeight(42)  # MAGIC!
+        self.setMaximumHeight(9000)  # OVERMAGIC!
 
-        self.width_border = 0
         self.background = '#f6f6f6'
-        self.setStyleSheet('border: {}px solid color; background-color:{}'.format(self.width_border,
-                                                                                  self.background))
+        self.setStyleSheet(styleSheets.qplots(self.background))
+        self.q_byte_array = QByteArray()
+        self.filling = 0
 
         self.__plot = QImage()
         self.src = QImage()
         self.__percent = 0
-        self.q_byte_array = QByteArray()
 
     @test_spectrum
     def add_data(self, data=None, max_number=50, height=100):
         if type(data[0]) == list:
             for row in range(len(data[0])):
                 for cell in range(len(data)):
-                    rgba = self.__rgba(data[cell][row], max_number)
-                    for c in rgba[::-1]:
+                    rgba_c = rgba.rgba(data[cell][row], max_number)
+                    for c in rgba_c[::-1]:
                         self.q_byte_array.append(chr(c))
         else:
             assert AttributeError
@@ -58,6 +83,14 @@ class Plots(QFrame):
 
         self.__plot = self.src
         self.repaint()
+
+    def append_q_bate_array(self, c):
+        self.q_byte_array.append(c)
+
+        self.src = QImage(self.q_byte_array, len(data), len(data[0]), 6)
+        self.__plot = self.src
+        self.repaint()
+
 
     def del_data(self):
         self.__plot = QImage()
@@ -97,23 +130,6 @@ class Plots(QFrame):
         else:
             raise IndexError
 
-    def __rgba(self, x, max_x):
-        x = int(x / max_x * 765)
-        # r  g  b
-        color = [1, 1, 1]
-        for i in (2, 0, 1):
-            if x > 255:
-                color[i] = 255
-            elif x > 0:
-                color[i] = x
-
-            x -= 255
-
-        if color[0] > 1:
-            color[2] = 256 - color[0]
-
-        return [255] + color
-
     def wheelEvent(self, event):
         print(event.angleDelta())
         if 20 < self.minimumHeight() < self.parent().height() - 200 or \
@@ -129,13 +145,21 @@ class Plots(QFrame):
             self.setMinimumHeight(42)
             self.setMaximumHeight(9000)
 
-        elif mouse_event.button() == Qt.LeftButton and self.height() < 500:
-            self.setMinimumHeight(self.height() + 100)
-            self.setMaximumHeight(self.height() + 100)
+        elif mouse_event.button() == Qt.LeftButton:
+            self.__plot = self.src.scaled(self.__plot.width() + 100, self.__plot.height())
 
-        elif mouse_event.button() == Qt.RightButton and self.height() > 142:
-            self.setMinimumHeight(self.height() - 100)
-            self.setMaximumHeight(self.height() - 100)
+        elif mouse_event.button() == Qt.RightButton and self.__plot.width() > 200:
+            self.__plot = self.src.scaled(self.__plot.width() - 100, self.__plot.height())
+
+        self.repaint()
 
 
+if __name__ == "__main__":
+    import sys
 
+    app = QApplication(sys.argv)
+    window = Plots()
+    window.show()
+    window.add_data('lalka')
+    window.close()
+    # app.exec()
