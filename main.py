@@ -6,6 +6,7 @@ import PyQt5.QtMultimedia as M
 
 import QPlots
 from syntax_pars import PythonHighlighter as Parser
+import QCodeEdit
 
 
 class Window(QtWidgets.QWidget):
@@ -29,61 +30,69 @@ class Window(QtWidgets.QWidget):
         # />
 
         # <plots
-
-        self.plots = [QPlots.Plots(), QPlots.Plots(), QPlots.Plots()]
-        self.plots_layout.addWidget(self.plots[0])
-        self.plots_layout.addWidget(self.plots[1])
-        self.plots_layout.addWidget(self.plots[2])
-
-        # self.plots.add_data('img/1.jpg')
-        self.plots[0].add_data('foo.png')
-        self.plots[1].add_data('foo.png')
-        self.plots[2].add_data('foo.png')
-        # self.plots.add_data('img/1.jpg')
+        self.plots = []
         # />
 
         self.play_pause_button.clicked.connect(self.play_pause)
         self.open_file_button.clicked.connect(self.load)
 
-        # <editors
+        self.code_edit = QCodeEdit.QCodeEdit()
 
-        self.editors = [self.text_program_0, self.text_program_1, self.text_program_2]
-        self.highlights = []
-        for i in range(3):
-            self.highlights.append(Parser(self.editors[i].document()))
+        self.layout_for_QCodeEdit.addWidget(self.code_edit)
+        self.highlights = Parser(self.code_edit.document())
 
-            with open('algorithms/{}.py'.format(str(i)), 'r') as f:
-                self.editors[i].setPlainText(f.read())
+        self.new_code_button.clicked.connect(self.new_file)
+        self.save_code_button.clicked.connect(self.save_file)
+        self.open_code_button.clicked.connect(self.open_file)
+        self.del_code_button.clicked.connect(self.close_file)
 
-        self.editors[0].textChanged.connect(
-            lambda: self.update_graphics(self.editors[0].toPlainText(), 0))
-        self.editors[1].textChanged.connect(
-            lambda: self.update_graphics(self.editors[1].toPlainText(), 1))
-        self.editors[2].textChanged.connect(
-            lambda: self.update_graphics(self.editors[2].toPlainText(), 2))
-
-        # self.graphicsView.resizeEvent.connect(self.test)
-
-        self.labels = []
-        self.add_label_button.clicked.connect(self.add_label)
-        self.del_label_button.clicked.connect(self.del_label)
+        self.choice_algorithm_box.currentTextChanged.connect(self.number_of_current_code_changed)
 
         self.exit_button.clicked.connect(self.close)
 
         self.fullscreen_button.clicked.connect(self.fullscreen)
         self.windowed = True
 
+    def add_plot(self, name):
+        self.choice_algorithm_box.addItem(name)
+        self.choice_algorithm_box.setCurrentIndex(self.choice_algorithm_box.count() - 1)
 
-    def pos_changed(self):
-        self.rewind(self.qt_player.position())
-        for plot in self.plots:
-            plot.update(self.qt_player.position() / self.qt_player.duration())
+        self.plots.append(QPlots.Plot())
+        self.plots_layout.addWidget(self.plots[-1])
+        self.plots[-1].add_data('foo.png')
 
-    def add_label(self):
-        pass
+    def number_of_current_code_changed(self, s):
+        if self.plots:
+            self.code_edit.load_file(s)
 
-    def del_label(self):
-        pass
+    def new_file(self):
+        name = self.code_edit.new_file()
+        self.add_plot(name)
+
+    def open_file(self):
+        name = self.code_edit.open_file()
+        self.add_plot(name)
+
+    def save_file(self):
+        self.code_edit.save_file()
+
+    def close_file(self):
+        if self.plots:
+            save_text = "Save the algorithm?"
+            reply = QtWidgets.QMessageBox.question(self, 'Save',
+                                                   save_text,
+                                                   QtWidgets.QMessageBox.Yes,
+                                                   QtWidgets.QMessageBox.No)
+
+            if reply == QtWidgets.QMessageBox.Yes:
+                self.save_file()
+
+            number = self.code_edit.close_file()
+            self.plots_layout.takeAt(number).widget().deleteLater()
+            self.plots.pop(number)
+
+            self.choice_algorithm_box.removeItem(number)
+
 
     def fullscreen(self, full=False):
         if self.windowed or full:
@@ -117,6 +126,12 @@ class Window(QtWidgets.QWidget):
                 self.windowed = True
 
     # sssssssssssssssssssssssssssssssssPLAYERssssssssssssssssssssssssssssssssssssss
+
+    def pos_changed(self):
+        self.rewind(self.qt_player.position())
+        for plot in self.plots:
+            plot.update(self.qt_player.position() / self.qt_player.duration())
+
     def rewind(self, x):
         if not self.track_slider.isSliderDown():
             self.time_of_track_label.setText(str(x // 1000))  # millisec > sec
@@ -170,26 +185,23 @@ class Window(QtWidgets.QWidget):
 
         # xxxxxxxxxxxxxxxxxxxxxxxxxxxxxPLAYERxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
-    def update_graphics(self, s, i):
-        check = s.replace('\n', '')
-        phrase = 'ok!'
-        if len(check) > len(phrase) and check[-len(phrase):] in phrase:
-            s = s[::-1].replace(phrase[::-1], '', 1)[::-1]  # del phrase from end
-            try:
-                exec(s)
 
-                with open('algorithms/{}.py'.format(str(i)), 'w') as f:
-                    f.write(self.editors[i].toPlainText())
-            except:
-                error = list(sys.exc_info())
-                class_error = str(error[0])
-                info = str(error[1]) + '\n' + str(error[2])
+        # try:
+        # exec(s)
+        #
+        # with open('algorithms/{}.py'.format(str(i)), 'w') as f:
+        #         f.write(self.editors[i].toPlainText())
+        # except:
+        #     error = list(sys.exc_info())
+        #     class_error = str(error[0])
+        #     info = str(error[1]) + '\n' + str(error[2])
+        #
+        #     message_box = QtWidgets.QMessageBox()
+        #     message_box.setWindowTitle(class_error)
+        #     message_box.setText('\n' + info + '\n')
+        #     message_box.addButton('  Fuuuuuuuuuck  ', QtWidgets.QMessageBox.YesRole)
+        #     message_box.exec_()
 
-                message_box = QtWidgets.QMessageBox()
-                message_box.setWindowTitle(class_error)
-                message_box.setText('\n' + info + '\n')
-                message_box.addButton('  Fuuuuuuuuuck  ', QtWidgets.QMessageBox.YesRole)
-                message_box.exec_()
 
 if __name__ == "__main__":
     import sys
