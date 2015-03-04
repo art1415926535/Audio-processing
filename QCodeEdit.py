@@ -63,7 +63,8 @@ class QCodeEdit(QPlainTextEdit):
         message_box.addButton(QMessageBox.Ok)
         message_box.exec_()
 
-    def textChanged(self, *args, **kwargs):
-        # self.loaded_files[self.now_file]['text'] = self.toPlainText()
-        print(self.now_file, 'save ')
+    def close_file(self):
+        name = self.loaded_files[self.now_file]['name']
+        self.loaded_files.pop(self.now_file)
+        return name
 
