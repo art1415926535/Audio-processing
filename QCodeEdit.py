@@ -9,7 +9,7 @@ class QCodeEdit(QPlainTextEdit):
         self.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
         self.setStyleSheet(styleSheets.QCodeEdit)
 
-        self.loaded_files = []  # [[name of file, text of file], ...]
+        self.loaded_files = []  # [{name of file, text of file, text of file}, ...]
         self.now_file = None
 
     def new_file(self):
@@ -22,7 +22,6 @@ class QCodeEdit(QPlainTextEdit):
 
         self.setPlainText(self.loaded_files[-1]['text'])
         self.now_file = len(self.loaded_files) - 1
-        print('New file. Number:', self.now_file)
         return self.loaded_files[-1]['name']
 
     def open_file(self):
@@ -51,17 +50,23 @@ class QCodeEdit(QPlainTextEdit):
         self.loaded_files[self.now_file]['text'] = self.toPlainText()
 
         if self.loaded_files[self.now_file]['path'] is None:
-            path, extension = QFileDialog.getSaveFileName(self, 'Save algorithm', '', filter='*.py')
-            if path[:-3] not in extension[1:]:
-                path += extension[1:]
-            self.loaded_files[self.now_file]['path'] = path
+            self.loaded_files[self.now_file]['path'], _ = \
+                QFileDialog.getSaveFileName(self, 'Save algorithm', '', filter='*.py')
 
-        with open(self.loaded_files[self.now_file]['path'], 'w') as f:
-            f.write(self.toPlainText())
+        if self.loaded_files[self.now_file]['path']:
+            if self.loaded_files[self.now_file]['path'][:-3] not in '.py':
+                self.loaded_files[self.now_file]['path'] += '.py'
+
+            with open(self.loaded_files[self.now_file]['path'], 'w') as f:
+                f.write(self.loaded_files[self.now_file]['text'])
 
         message_box = QMessageBox()
         message_box.setWindowTitle('Save')
-        message_box.setText('\nAlgorithm save to' + self.loaded_files[self.now_file]['path'] + '\n')
+        if self.loaded_files[self.now_file]['path']:
+            message_box.setText('\nAlgorithm save to' + self.loaded_files[self.now_file]['path'] + '\n')
+        else:
+            message_box.setText("\nThe algorithm is not saved" + '\n')
+
         message_box.addButton(QMessageBox.Ok)
         message_box.exec_()
 
@@ -69,7 +74,6 @@ class QCodeEdit(QPlainTextEdit):
         number = self.now_file
 
         self.loaded_files.pop(self.now_file)
-        print('Closed file. Number:', self.now_file)
 
         if self.loaded_files:
             self.now_file = 0
