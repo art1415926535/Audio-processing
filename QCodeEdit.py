@@ -66,5 +66,12 @@ class QCodeEdit(QPlainTextEdit):
     def close_file(self):
         name = self.loaded_files[self.now_file]['name']
         self.loaded_files.pop(self.now_file)
+
+        if self.loaded_files:
+            self.now_file = 0
+            self.load_file(self.loaded_files[self.now_file]['name'])
+        else:
+            self.new_file()
+
         return name
 
