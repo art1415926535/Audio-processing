@@ -197,15 +197,211 @@ font-family: 'Helvetica';</string>
       <number>5</number>
      </property>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
-       <property name="spacing">
+      <widget class="QSlider" name="track_slider">
+       <property name="styleSheet">
+        <string notr="true">QSlider::groove:horizontal {
+background: #777;
+height: 6px;
+}
+
+QSlider::add-page:horizontal {
+background: #eee;
+height: 10px;
+}
+
+QSlider::handle:horizontal {
+background: #bbb;
+width: 20px;
+height: 20px;
+margin-top: -8px;
+margin-bottom: -8px;
+border-radius: 10px;
+}
+
+QSlider::handle:horizontal:hover {
+background: #aaa;
+}
+
+QSlider::sub-page:horizontal:disabled {
+background: #eee;
+border-color: #999;
+}
+
+QSlider::add-page:horizontal:disabled {
+background: #eee;
+border-color: #999;
+}
+
+QSlider::handle:horizontal:disabled {
+background: #eee;
+}</string>
+       </property>
+       <property name="maximum">
+        <number>100000</number>
+       </property>
+       <property name="tracking">
+        <bool>false</bool>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="tickPosition">
+        <enum>QSlider::NoTicks</enum>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="center" stretch="8,2">
+     <property name="spacing">
+      <number>8</number>
+     </property>
+     <property name="sizeConstraint">
+      <enum>QLayout::SetMinimumSize</enum>
+     </property>
+     <property name="leftMargin">
+      <number>5</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>5</number>
+     </property>
+     <property name="bottomMargin">
+      <number>8</number>
+     </property>
+     <item>
+      <widget class="QScrollArea" name="scrollArea">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QWidget{
+background: #ccc;
+}
+
+
+    QScrollBar:vertical {
+        background: #fff;
+        width: 15px;
+    }
+    QScrollBar::handle:vertical {
+        background:rgba(38, 220, 214, 255);
+        min-height: 15px;
+    }
+    QScrollBar::add-line:vertical {
+        background: #fff;
+        height: 15px;
+    }
+    QScrollBar::sub-line:vertical {
+        background: #fff;
+        height: 15px;
+    }
+
+
+    QScrollBar:horizontal {
+        background: #fff;
+        height: 15px;
+    }
+    QScrollBar::handle:horizontal {
+        background: rgba(38, 220, 214, 255);
+        min-width: 15px;
+    }
+    QScrollBar::add-line:horizontal {
+        background: #fff;
+        width: 15px;
+    }
+    QScrollBar::sub-line:horizontal {
+        background: #fff;
+        width: 15px;
+    }
+</string>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <property name="lineWidth">
+        <number>1</number>
+       </property>
+       <property name="midLineWidth">
         <number>0</number>
        </property>
-       <property name="sizeConstraint">
-        <enum>QLayout::SetMaximumSize</enum>
+       <property name="verticalScrollBarPolicy">
+        <enum>Qt::ScrollBarAsNeeded</enum>
+       </property>
+       <property name="horizontalScrollBarPolicy">
+        <enum>Qt::ScrollBarAsNeeded</enum>
+       </property>
+       <property name="widgetResizable">
+        <bool>true</bool>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+       <widget class="QWidget" name="scrollAreaWidgetContents_3">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>775</width>
+          <height>502</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <layout class="QVBoxLayout" name="plots_layout">
+           <property name="spacing">
+            <number>5</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+          </layout>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="editors">
+       <property name="spacing">
+        <number>8</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
        </property>
        <item>
         <widget class="QWidget" name="horizontalWidget_3" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="styleSheet">
           <string notr="true">QWidget{
 background: #f6f6f6;
@@ -314,14 +510,14 @@ border: none;</string>
           <item>
            <widget class="QPushButton" name="time_of_track_label">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
             </property>
             <property name="minimumSize">
              <size>
-              <width>80</width>
+              <width>85</width>
               <height>0</height>
              </size>
             </property>
@@ -346,7 +542,7 @@ QPushButton:hover{
 }</string>
             </property>
             <property name="text">
-             <string>123</string>
+             <string>(*_* )</string>
             </property>
             <property name="icon">
              <iconset resource="ico/material.qrc">
@@ -360,35 +556,6 @@ QPushButton:hover{
             </property>
            </widget>
           </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QWidget" name="horizontalWidget_3" native="true">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QWidget{
-background: #f6f6f6;
-}
-QLabel{
-font-size: 15px;
-color: rgb(131, 131, 131);
-border: none;
-
-}
-QLabel:hover{
-color: rgb(101, 101, 101);
-}</string>
-         </property>
-         <layout class="QHBoxLayout" name="horizontalLayout_5">
-          <property name="rightMargin">
-           <number>25</number>
-          </property>
           <item>
            <spacer name="verticalSpacer">
             <property name="orientation">
@@ -399,40 +566,23 @@ color: rgb(101, 101, 101);
             </property>
             <property name="sizeHint" stdset="0">
              <size>
-              <width>10</width>
-              <height>28</height>
+              <width>0</width>
+              <height>45</height>
              </size>
             </property>
            </spacer>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>10</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="labels_layout">
-            <property name="spacing">
-             <number>10</number>
-            </property>
-            <property name="sizeConstraint">
-             <enum>QLayout::SetMaximumSize</enum>
-            </property>
-           </layout>
           </item>
          </layout>
         </widget>
        </item>
        <item>
         <widget class="QWidget" name="horizontalWidget_3" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="styleSheet">
           <string notr="true">QWidget{
 background: #f6f6f6;
@@ -450,9 +600,9 @@ QPushButton:hover{
            <number>0</number>
           </property>
           <item>
-           <widget class="QPushButton" name="add_label_button">
+           <widget class="QPushButton" name="new_code_button">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
+             <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -484,9 +634,80 @@ border: none;</string>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="del_label_button">
+           <widget class="QPushButton" name="open_code_button">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
+             <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>46</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPushButton{
+  color: #555 ;
+  height: 26px;
+  border: none;
+}</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="ico/material.qrc">
+              <normaloff>:/open/ic_folder_grey600_48dp.png</normaloff>:/open/ic_folder_grey600_48dp.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="save_code_button">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>46</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">color: #555;
+height: 26px;
+border: none;
+</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="ico/material.qrc">
+              <normaloff>:/save/ic_save_grey600_48dp.png</normaloff>:/save/ic_save_grey600_48dp.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="del_code_button">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -522,514 +743,82 @@ Url: url(:/color/ic_delete_color_48dp_hover.png);
             </property>
            </widget>
           </item>
+          <item>
+           <spacer name="verticalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Fixed</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>1</width>
+              <height>45</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
          </layout>
         </widget>
        </item>
-      </layout>
-     </item>
-     <item>
-      <widget class="QSlider" name="track_slider">
-       <property name="styleSheet">
-        <string notr="true">QSlider::groove:horizontal {
-background: #777;
-height: 6px;
-}
-
-QSlider::add-page:horizontal {
-background: #eee;
-height: 10px;
-}
-
-QSlider::handle:horizontal {
-background: #bbb;
-width: 20px;
-height: 20px;
-margin-top: -8px;
-margin-bottom: -8px;
-border-radius: 10px;
-}
-
-QSlider::handle:horizontal:hover {
-background: #aaa;
-}
-
-QSlider::sub-page:horizontal:disabled {
-background: #eee;
-border-color: #999;
-}
-
-QSlider::add-page:horizontal:disabled {
-background: #eee;
-border-color: #999;
-}
-
-QSlider::handle:horizontal:disabled {
-background: #eee;
-}</string>
-       </property>
-       <property name="maximum">
-        <number>100000</number>
-       </property>
-       <property name="tracking">
-        <bool>false</bool>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="tickPosition">
-        <enum>QSlider::NoTicks</enum>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="center" stretch="0,2">
-     <property name="spacing">
-      <number>8</number>
-     </property>
-     <property name="sizeConstraint">
-      <enum>QLayout::SetMinimumSize</enum>
-     </property>
-     <property name="leftMargin">
-      <number>5</number>
-     </property>
-     <property name="topMargin">
-      <number>0</number>
-     </property>
-     <property name="rightMargin">
-      <number>5</number>
-     </property>
-     <property name="bottomMargin">
-      <number>8</number>
-     </property>
-     <item>
-      <widget class="QScrollArea" name="scrollArea">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">QWidget{
-background: #ccc;
-}
-
-
-    QScrollBar:vertical {
-        background: #fff;
-        width: 15px;
-    }
-    QScrollBar::handle:vertical {
-        background:rgba(38, 220, 214, 255);
-        min-height: 15px;
-    }
-    QScrollBar::add-line:vertical {
-        background: #fff;
-        height: 15px;
-    }
-    QScrollBar::sub-line:vertical {
-        background: #fff;
-        height: 15px;
-    }
-
-
-    QScrollBar:horizontal {
-        background: #fff;
-        height: 15px;
-    }
-    QScrollBar::handle:horizontal {
-        background: rgba(38, 220, 214, 255);
-        min-width: 15px;
-    }
-    QScrollBar::add-line:horizontal {
-        background: #fff;
-        width: 15px;
-    }
-    QScrollBar::sub-line:horizontal {
-        background: #fff;
-        width: 15px;
-    }
-</string>
-       </property>
-       <property name="frameShape">
-        <enum>QFrame::NoFrame</enum>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Raised</enum>
-       </property>
-       <property name="lineWidth">
-        <number>1</number>
-       </property>
-       <property name="midLineWidth">
-        <number>0</number>
-       </property>
-       <property name="verticalScrollBarPolicy">
-        <enum>Qt::ScrollBarAsNeeded</enum>
-       </property>
-       <property name="horizontalScrollBarPolicy">
-        <enum>Qt::ScrollBarAsNeeded</enum>
-       </property>
-       <property name="widgetResizable">
-        <bool>true</bool>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-       <widget class="QWidget" name="scrollAreaWidgetContents_3">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>0</y>
-          <width>60</width>
-          <height>448</height>
-         </rect>
-        </property>
-        <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <layout class="QVBoxLayout" name="layout_for_QCodeEdit">
+         <property name="sizeConstraint">
+          <enum>QLayout::SetMinimumSize</enum>
+         </property>
          <item>
-          <layout class="QVBoxLayout" name="plots_layout">
-           <property name="spacing">
-            <number>5</number>
+          <widget class="QComboBox" name="choice_algorithm_box">
+           <property name="font">
+            <font>
+             <family>RobotoDraft,Helvetica Neue,Helvetica,Arial</family>
+             <pointsize>13</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+             <stylestrategy>PreferAntialias</stylestrategy>
+            </font>
            </property>
-           <property name="topMargin">
+           <property name="styleSheet">
+            <string notr="true">QComboBox
+{
+	background: #f6f6f6;
+    border: none;
+	color: #333;
+    height: 25px;
+}
+
+QComboBox QListView::item:selected
+{
+    border-style: none;
+    background-color: #ccc;
+}
+
+QComboBox::drop-down
+{
+    width: 20px;
+    border-style: none;
+    height: 25px;
+}
+</string>
+           </property>
+           <property name="maxVisibleItems">
+            <number>20</number>
+           </property>
+           <property name="minimumContentsLength">
             <number>0</number>
            </property>
-           <property name="rightMargin">
+           <property name="iconSize">
+            <size>
+             <width>30</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="modelColumn">
             <number>0</number>
            </property>
-          </layout>
+          </widget>
          </item>
         </layout>
-       </widget>
-      </widget>
-     </item>
-     <item>
-      <layout class="QVBoxLayout" name="editors">
-       <property name="spacing">
-        <number>25</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
-       <item>
-        <widget class="QToolBox" name="toolBox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Minimum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>265</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>265</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="cursor">
-          <cursorShape>PointingHandCursor</cursorShape>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QAbstractButton{
-color: #555;
-height: 26px;
-width: 60px;
-background-color: #ddd;
-border: none;
-
-}
- QToolBox::tab {
-  background-color: qlineargradient(spread:reflect, x1:1, y1:0, x2:1, y2:1, stop:0 rgba(210, 210, 210, 255), stop:1 rgba(198, 198, 198, 255))
- }
-
- QToolBox::tab:selected { /* italicize selected tabs */
-	background-color:  qlineargradient(spread:reflect, x1:1, y1:0, x2:1, y2:1, stop:0.125 rgba(38, 220, 214, 255), stop:1 rgba(138, 200, 200, 255))
-}</string>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::NoFrame</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Plain</enum>
-         </property>
-         <property name="lineWidth">
-          <number>0</number>
-         </property>
-         <property name="currentIndex">
-          <number>0</number>
-         </property>
-         <property name="tabSpacing">
-          <number>0</number>
-         </property>
-         <widget class="QWidget" name="page_5">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>265</width>
-            <height>374</height>
-           </rect>
-          </property>
-          <attribute name="icon">
-           <iconset resource="ico/material.qrc">
-            <normaloff>:/numbers/ic_filter_1_grey600_48dp.png</normaloff>:/numbers/ic_filter_1_grey600_48dp.png</iconset>
-          </attribute>
-          <attribute name="label">
-           <string/>
-          </attribute>
-          <layout class="QVBoxLayout" name="verticalLayout_11">
-           <property name="spacing">
-            <number>0</number>
-           </property>
-           <property name="margin">
-            <number>0</number>
-           </property>
-           <item>
-            <widget class="QPlainTextEdit" name="text_program_0">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="font">
-              <font>
-               <family>Consolas</family>
-               <pointsize>11</pointsize>
-              </font>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">    QScrollBar:vertical {
-        border: none;
-        background: #eee;
-        width: 12px;
-    }
-    QScrollBar::handle:vertical {
-        background: #e0e0e0;
-        min-height: 20px;
-    }
-
-    QScrollBar:horizontal {
-        border: none;
-        background: #eee;
-        height: 12px;
-    }
-    QScrollBar::handle:horizontal {
-        background: #e0e0e0;
-        min-width: 20px;
-    }
-
-QPlainTextEdit{
-  font-family:'Consolas';
-  color: #333;
-	background-color: qlineargradient(spread:reflect, x1:0, y1:0.642, x2:0, y2:0, stop:0.847458 rgba(243, 243, 243, 255), stop:1 rgba(189, 189, 189, 255));
-  /*border-top: 2px solid rgb(180, 180, 180);*/
-  }</string>
-             </property>
-             <property name="frameShape">
-              <enum>QFrame::NoFrame</enum>
-             </property>
-             <property name="frameShadow">
-              <enum>QFrame::Plain</enum>
-             </property>
-             <property name="lineWidth">
-              <number>0</number>
-             </property>
-             <property name="verticalScrollBarPolicy">
-              <enum>Qt::ScrollBarAsNeeded</enum>
-             </property>
-             <property name="horizontalScrollBarPolicy">
-              <enum>Qt::ScrollBarAsNeeded</enum>
-             </property>
-             <property name="lineWrapMode">
-              <enum>QPlainTextEdit::NoWrap</enum>
-             </property>
-             <property name="plainText">
-              <string/>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-         <widget class="QWidget" name="page_7">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>265</width>
-            <height>374</height>
-           </rect>
-          </property>
-          <attribute name="icon">
-           <iconset resource="ico/material.qrc">
-            <normaloff>:/numbers/ic_filter_2_grey600_48dp.png</normaloff>:/numbers/ic_filter_2_grey600_48dp.png</iconset>
-          </attribute>
-          <attribute name="label">
-           <string/>
-          </attribute>
-          <layout class="QVBoxLayout" name="verticalLayout_13">
-           <property name="spacing">
-            <number>0</number>
-           </property>
-           <property name="margin">
-            <number>0</number>
-           </property>
-           <item>
-            <widget class="QPlainTextEdit" name="text_program_1">
-             <property name="font">
-              <font>
-               <family>Consolas</family>
-               <pointsize>11</pointsize>
-              </font>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">    QScrollBar:vertical {
-        border: none;
-        background: #eee;
-        width: 12px;
-    }
-    QScrollBar::handle:vertical {
-        background: #e0e0e0;
-        min-height: 20px;
-    }
-
-    QScrollBar:horizontal {
-        border: none;
-        background: #eee;
-        height: 12px;
-    }
-    QScrollBar::handle:horizontal {
-        background: #e0e0e0;
-        min-width: 20px;
-    }
-
-QPlainTextEdit{
-  font-family:'Consolas';
-  color: #333;
-	background-color: qlineargradient(spread:reflect, x1:0, y1:0.642, x2:0, y2:0, stop:0.847458 rgba(243, 243, 243, 255), stop:1 rgba(200, 200, 200, 255));
-  }</string>
-             </property>
-             <property name="frameShape">
-              <enum>QFrame::NoFrame</enum>
-             </property>
-             <property name="frameShadow">
-              <enum>QFrame::Plain</enum>
-             </property>
-             <property name="lineWidth">
-              <number>0</number>
-             </property>
-             <property name="verticalScrollBarPolicy">
-              <enum>Qt::ScrollBarAsNeeded</enum>
-             </property>
-             <property name="horizontalScrollBarPolicy">
-              <enum>Qt::ScrollBarAsNeeded</enum>
-             </property>
-             <property name="lineWrapMode">
-              <enum>QPlainTextEdit::NoWrap</enum>
-             </property>
-             <property name="plainText">
-              <string/>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-         <widget class="QWidget" name="page_6">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>265</width>
-            <height>374</height>
-           </rect>
-          </property>
-          <attribute name="icon">
-           <iconset resource="ico/material.qrc">
-            <normaloff>:/numbers/ic_filter_3_grey600_48dp.png</normaloff>:/numbers/ic_filter_3_grey600_48dp.png</iconset>
-          </attribute>
-          <attribute name="label">
-           <string/>
-          </attribute>
-          <layout class="QVBoxLayout" name="verticalLayout_12">
-           <property name="spacing">
-            <number>0</number>
-           </property>
-           <property name="margin">
-            <number>0</number>
-           </property>
-           <item>
-            <widget class="QPlainTextEdit" name="text_program_2">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="font">
-              <font>
-               <family>Consolas</family>
-               <pointsize>11</pointsize>
-              </font>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">    QScrollBar:vertical {
-        border: none;
-        background: #ddd;
-        width: 12px;
-    }
-    QScrollBar::handle:vertical {
-        background: #ccc;
-        min-height: 20px;
-    }
-
-    QScrollBar:horizontal {
-        border: none;
-        background: #ddd;
-        height: 12px;
-    }
-    QScrollBar::handle:horizontal {
-        background: #ccc;
-        min-width: 20px;
-    }
-
-QPlainTextEdit{
-  font-family:'Consolas';
-  color: #333;
-	background-color: qlineargradient(spread:reflect, x1:0, y1:0.642, x2:0, y2:0, stop:0.847458 rgba(243, 243, 243, 255), stop:1 rgba(189, 189, 189, 255));
-  }</string>
-             </property>
-             <property name="frameShape">
-              <enum>QFrame::NoFrame</enum>
-             </property>
-             <property name="frameShadow">
-              <enum>QFrame::Plain</enum>
-             </property>
-             <property name="lineWidth">
-              <number>0</number>
-             </property>
-             <property name="verticalScrollBarPolicy">
-              <enum>Qt::ScrollBarAsNeeded</enum>
-             </property>
-             <property name="horizontalScrollBarPolicy">
-              <enum>Qt::ScrollBarAsNeeded</enum>
-             </property>
-             <property name="lineWrapMode">
-              <enum>QPlainTextEdit::NoWrap</enum>
-             </property>
-             <property name="plainText">
-              <string/>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </widget>
        </item>
       </layout>
      </item>
