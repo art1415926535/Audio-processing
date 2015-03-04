@@ -51,7 +51,7 @@ def rgba(x, max_x):
     return [255] + color
 
 
-class Plots(QFrame):
+class Plot(QFrame):
     def __init__(self, parent=None):
         QWidget.__init__(self, parent)
 
@@ -73,7 +73,7 @@ class Plots(QFrame):
         if type(data[0]) == list:
             for row in range(len(data[0])):
                 for cell in range(len(data)):
-                    rgba_c = rgba.rgba(data[cell][row], max_number)
+                    rgba_c = rgba(data[cell][row], max_number)
                     for c in rgba_c[::-1]:
                         self.q_byte_array.append(chr(c))
         else:
@@ -131,7 +131,6 @@ class Plots(QFrame):
             raise IndexError
 
     def wheelEvent(self, event):
-        print(event.angleDelta())
         if 20 < self.minimumHeight() < self.parent().height() - 200 or \
                 (event.angleDelta().y() < 0 and self.minimumHeight() >= self.parent().height()):
             self.setMinimumHeight(self.height() + event.angleDelta().y() / 24)
@@ -158,8 +157,8 @@ if __name__ == "__main__":
     import sys
 
     app = QApplication(sys.argv)
-    window = Plots()
+    window = Plot()
     window.show()
     window.add_data('lalka')
-    window.close()
-    # app.exec()
+    # window.close()
+    app.exec()
