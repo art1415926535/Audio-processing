@@ -10,7 +10,7 @@ class QCodeEdit(QPlainTextEdit):
         self.setStyleSheet(styleSheets.QCodeEdit)
 
         self.loaded_files = []  # [[name of file, text of file], ...]
-        self.now_file = 0
+        self.now_file = None
 
     def new_file(self):
         import datetime
@@ -21,6 +21,8 @@ class QCodeEdit(QPlainTextEdit):
                                       date=datetime.datetime.now().isoformat(' ')[:-7])})
 
         self.setPlainText(self.loaded_files[-1]['text'])
+        self.now_file = len(self.loaded_files) - 1
+        print('New file. Number:', self.now_file)
         return self.loaded_files[-1]['name']
 
     def open_file(self):
@@ -64,14 +66,15 @@ class QCodeEdit(QPlainTextEdit):
         message_box.exec_()
 
     def close_file(self):
-        name = self.loaded_files[self.now_file]['name']
+        number = self.now_file
+
         self.loaded_files.pop(self.now_file)
+        print('Closed file. Number:', self.now_file)
 
         if self.loaded_files:
             self.now_file = 0
             self.load_file(self.loaded_files[self.now_file]['name'])
         else:
-            self.new_file()
-
-        return name
+            self.setPlainText('Загрузите файл')  # FIXME создать новый файл
+        return number
 
