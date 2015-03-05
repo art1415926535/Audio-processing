@@ -106,7 +106,7 @@ class Plot(QFrame):
     def paintEvent(self, *__args):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
-        painter.setPen(QPen(QColor.blue))
+        # painter.setPen(QPen(QColor.blue))
         accumulator_y = 0
 
         painter.drawImage(self.width() // 2 - self.__plot.width() * self.percent, accumulator_y,
