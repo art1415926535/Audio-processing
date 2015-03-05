@@ -15,10 +15,11 @@ class QCodeEdit(QPlainTextEdit):
     def new_file(self):
         import datetime
 
+        code = "from wave_pars import Wave\nimport calc\n\nwave = Wave('The Game.wav')\n"
         self.loaded_files.append({'name': 'Algorithm {}'.format(len(self.loaded_files)),
                                   'path': None,
-                                  'text': '{date}\n\nimport calc\n\n'.format(
-                                      date=datetime.datetime.now().isoformat(' ')[:-7])})
+                                  'text': '{date}\n{code}'.format(
+                                      date=datetime.datetime.now().isoformat(' ')[:-7], code=code)})
 
         self.setPlainText(self.loaded_files[-1]['text'])
         self.now_file = len(self.loaded_files) - 1
