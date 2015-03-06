@@ -207,9 +207,9 @@ class Plot2d(GraphicsLayoutWidget):
             self.setMaximumHeight(self.height() + event.angleDelta().y() / 24)
 
 
-class Plot3dTest(pg.ImageView):
+class Plot3dTest(GraphicsLayoutWidget):
     def __init__(self, parent=None, name=''):
-        pg.ImageView.__init__(self)
+        GraphicsLayoutWidget.__init__(self)
 
         self.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
         self.setMinimumHeight(42)  # MAGIC!
@@ -218,8 +218,19 @@ class Plot3dTest(pg.ImageView):
         self.background = '#f6f6f6'
         self.setStyleSheet(styleSheets.qplots(self.background))
 
-        # self.line = InfiniteLine.InfiniteLine((0, 0))
-        # self.__plot.addItem(self.line)
+        self.__plot = self.addPlot()
+
+        self.img = pg.ImageItem()
+        data = np.random.normal(size=(100, 200))
+        data[20:80, 20:80] += 2.
+        data = pg.gaussianFilter(data, (3, 3))
+        data += np.random.normal(size=(100, 200)) * 0.1
+        self.img.setImage(data)
+        self.__plot.addItem(self.img)
+
+        self.line = InfiniteLine.InfiniteLine((0, 0))
+        self.__plot.addItem(self.line)
+
         self.data = []
         self.__percent = 0
 
@@ -235,13 +246,12 @@ class Plot3dTest(pg.ImageView):
             raise IndexError
 
     def update(self, p=0):
-        # self.line.setPos(p * len(self.data))
-        pass
+        self.line.setPos(p * len(self.data))
 
     def set_data(self, data=[[math.sin(d / 30) * random.normalvariate(0.9, 0.1)
                               for d in range(500)]] * 500):
         self.data = data
-        self.setImage(np.array(self.data))
+        self.img.setImage(np.array(self.data))
 
 
     def wheelEvent(self, event):
