@@ -7,6 +7,8 @@ from PyQt5.QtGui import QImage, QPainter, QPen, QColor
 from PyQt5.QtCore import QByteArray, Qt
 from pyqtgraph.widgets.GraphicsLayoutWidget import GraphicsLayoutWidget
 from pyqtgraph.graphicsItems import InfiniteLine
+import pyqtgraph as pg
+import numpy as np
 
 import styleSheets
 
@@ -118,7 +120,7 @@ class Plot3d(QFrame):
 
         delta_x = 0
         for aa in range(255, 0, -20):
-            painter.setPen(QPen(QColor(0, 0, 0, aa)))
+            painter.setPen(QPen(QColor(255, 255, 255, aa)))
             painter.drawLine(self.width() // 2 - delta_x, 0, self.width() // 2 - delta_x, self.height())
             delta_x += 1
 
@@ -204,11 +206,60 @@ class Plot2d(GraphicsLayoutWidget):
             self.setMinimumHeight(self.height() + event.angleDelta().y() / 24)
             self.setMaximumHeight(self.height() + event.angleDelta().y() / 24)
 
+
+class Plot3dTest(pg.ImageView):
+    def __init__(self, parent=None, name=''):
+        pg.ImageView.__init__(self)
+
+        self.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
+        self.setMinimumHeight(42)  # MAGIC!
+        self.setMaximumHeight(9000)  # OVERMAGIC!
+
+        self.background = '#f6f6f6'
+        self.setStyleSheet(styleSheets.qplots(self.background))
+
+        # self.line = InfiniteLine.InfiniteLine((0, 0))
+        # self.__plot.addItem(self.line)
+        self.data = []
+        self.__percent = 0
+
+    @property
+    def percent(self):
+        return self.__percent
+
+    @percent.setter
+    def percent(self, p):
+        if 0 <= p <= 100:
+            self.__percent = p
+        else:
+            raise IndexError
+
+    def update(self, p=0):
+        # self.line.setPos(p * len(self.data))
+        pass
+
+    def set_data(self, data=[[math.sin(d / 30) * random.normalvariate(0.9, 0.1)
+                              for d in range(500)]] * 500):
+        self.data = data
+        self.setImage(np.array(self.data))
+
+
+    def wheelEvent(self, event):
+        if 20 < self.minimumHeight() < self.parent().height() - 200 or \
+                (event.angleDelta().y() < 0 and self.minimumHeight() >= self.parent().height()):
+            self.setMinimumHeight(self.height() + event.angleDelta().y() / 24)
+            self.setMaximumHeight(self.height() + event.angleDelta().y() / 24)
+        elif self.maximumHeight() > 50 or event.angleDelta().y() > 0:
+            self.setMinimumHeight(self.height() + event.angleDelta().y() / 24)
+            self.setMaximumHeight(self.height() + event.angleDelta().y() / 24)
+
+
+
 if __name__ == "__main__":
     import sys
 
     app = QApplication(sys.argv)
-    window = Plot2d()
+    window = Plot3dTest()
     window.show()
 
     window.set_data()
