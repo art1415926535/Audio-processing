@@ -1,4 +1,5 @@
 import logging
+import threading
 
 from PyQt5 import QtGui, QtCore, uic, QtWidgets
 import PyQt5.QtCore as C
@@ -8,7 +9,6 @@ import QPlots
 from syntax_pars import PythonHighlighter as Parser
 import QCodeEdit
 
-
 class Window(QtWidgets.QWidget):
     def __init__(self, app, parent=None):
         QtWidgets.QWidget.__init__(self, parent)
@@ -16,6 +16,8 @@ class Window(QtWidgets.QWidget):
         self.scene = QtWidgets.QGraphicsScene()
         self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         self.app = app
+
+
 
         # <player
         self.qt_player = M.QMediaPlayer()
@@ -54,12 +56,16 @@ class Window(QtWidgets.QWidget):
         self.fullscreen_button.clicked.connect(self.fullscreen)
         self.windowed = True
 
-    def perform_algorithm(self):
+    def perform_code(self):
         code = self.code_edit.toPlainText()
+        plot = self.plots[self.code_edit.now_file]
+        exec(code)
+        print('END')
 
+    def perform_algorithm(self):
+        self.__thread = threading.Thread(target=self.perform_code)
         try:
-            plot = self.plots[self.code_edit.now_file]
-            exec(code)
+            self.__thread.start()
         except:
             error = list(sys.exc_info())
             class_error = str(error[0])
