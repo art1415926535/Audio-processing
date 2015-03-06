@@ -25,10 +25,15 @@ class Wave():
         for n in range(self.nchannels):
             self.__channels.append(self.samples[n::self.nchannels])
 
-    def get_channel(self, channel=0):
+    @property
+    def channel(self, channel=0):
         return self.__channels[channel]
 
-    def normalization_channel(self, channel=0):
+    @channel.setter
+    def channel(self, _):
+        assert AttributeError
+
+    def norm_channel(self, channel=0):
         print('start')
         array = self.get_channel(channel)
         maximum = max(array)
