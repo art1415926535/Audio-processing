@@ -9,6 +9,7 @@ import QPlots
 from syntax_pars import PythonHighlighter as Parser
 import QCodeEdit
 
+
 class Window(QtWidgets.QWidget):
     def __init__(self, app, parent=None):
         QtWidgets.QWidget.__init__(self, parent)
@@ -86,7 +87,7 @@ class Window(QtWidgets.QWidget):
         message_box.addButton('2d', QtWidgets.QMessageBox.YesRole)
         message_box.addButton('3d', QtWidgets.QMessageBox.NoRole)
         if message_box.exec_() == 1:
-            self.plots.append(QPlots.Plot3d())
+            self.plots.append(QPlots.Plot3dTest())
         else:
             self.plots.append(QPlots.Plot2d(name=name))
 
