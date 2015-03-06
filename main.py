@@ -41,6 +41,7 @@ class Window(QtWidgets.QWidget):
         self.layout_for_QCodeEdit.addWidget(self.code_edit)
         self.highlights = Parser(self.code_edit.document())
 
+        self.perform_algorithm_button.clicked.connect(self.perform_algorithm)
         self.new_code_button.clicked.connect(self.new_file)
         self.save_code_button.clicked.connect(self.save_file)
         self.open_code_button.clicked.connect(self.open_file)
@@ -53,16 +54,42 @@ class Window(QtWidgets.QWidget):
         self.fullscreen_button.clicked.connect(self.fullscreen)
         self.windowed = True
 
+    def perform_algorithm(self):
+        code = self.code_edit.toPlainText()
+
+        try:
+            plot = self.plots[self.code_edit.now_file]
+            exec(code)
+        except:
+            error = list(sys.exc_info())
+            class_error = str(error[0])
+            info = str(error[1]) + '\n' + str(error[2])
+
+            message_box = QtWidgets.QMessageBox()
+            message_box.setWindowTitle(class_error)
+            message_box.setText('\n' + info + '\n')
+            message_box.addButton('  Fuuuuuuuuuck  ', QtWidgets.QMessageBox.YesRole)
+            message_box.exec_()
+
     def add_plot(self, name):
         self.choice_algorithm_box.addItem(name)
         self.choice_algorithm_box.setCurrentIndex(self.choice_algorithm_box.count() - 1)
 
-        self.plots.append(QPlots.Plot())
+        message_box = QtWidgets.QMessageBox()
+        message_box.setText('\n' + '2D?' + '\n')
+        message_box.addButton('2d', QtWidgets.QMessageBox.YesRole)
+        message_box.addButton('3d', QtWidgets.QMessageBox.NoRole)
+        if message_box.exec_() == 1:
+            self.plots.append(QPlots.Plot3d())
+        else:
+            self.plots.append(QPlots.Plot2d(name=name))
+
         self.plots_layout.addWidget(self.plots[-1])
-        self.plots[-1].add_data('foo.png')
+        self.plots[-1].set_data()
 
     def number_of_current_code_changed(self, s):
         if self.plots:
+            print(s)
             self.code_edit.load_file(s)
 
     def new_file(self):
@@ -71,7 +98,8 @@ class Window(QtWidgets.QWidget):
 
     def open_file(self):
         name = self.code_edit.open_file()
-        self.add_plot(name)
+        if name is not None:
+            self.add_plot(name)
 
     def save_file(self):
         self.code_edit.save_file()
@@ -149,6 +177,8 @@ class Window(QtWidgets.QWidget):
 
     def load(self, path):
         self.play_pause_button.setEnabled(True)
+
+        path, extension = QtWidgets.QFileDialog.getOpenFileName(self, 'Open file', '')
         if not path:
             logging.warning('НЕ УКАЗАН ПУТЬ К ФАЙЛУ')
         else:
