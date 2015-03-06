@@ -8,17 +8,28 @@ class QCodeEdit(QPlainTextEdit):
         super().__init__(*__args)
         self.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Minimum)
         self.setStyleSheet(styleSheets.QCodeEdit)
+        self.setWordWrapMode(0)
 
         self.loaded_files = []  # [{name of file, text of file, text of file}, ...]
         self.now_file = None
 
+    @property
+    def now_file(self):
+        return self.__now_file
+
+    @now_file.setter
+    def now_file(self, n):
+        self.__now_file = n
+
     def new_file(self):
+        if self.now_file is not None:
+            self.loaded_files[self.now_file]['text'] = self.toPlainText()
         import datetime
 
-        code = "from wave_pars import Wave\nimport calc\n\nwave = Wave('The Game.wav')\n"
+        code = "from wave_pars import Wave\nimport calculation\n\nwave = Wave('music\The Game.wav')\n"
         self.loaded_files.append({'name': 'Algorithm {}'.format(len(self.loaded_files)),
                                   'path': None,
-                                  'text': '{date}\n{code}'.format(
+                                  'text': '# {date}\n{code}'.format(
                                       date=datetime.datetime.now().isoformat(' ')[:-7], code=code)})
 
         self.setPlainText(self.loaded_files[-1]['text'])
@@ -26,6 +37,8 @@ class QCodeEdit(QPlainTextEdit):
         return self.loaded_files[-1]['name']
 
     def open_file(self):
+        if self.now_file is not None:
+            self.loaded_files[self.now_file]['text'] = self.toPlainText()
         path, extension = QFileDialog.getOpenFileName(self, 'Open algorithm', '', filter='*.py')
         if path:
             with open(path, 'r') as f:
@@ -37,6 +50,7 @@ class QCodeEdit(QPlainTextEdit):
                                       'text': self.toPlainText()})
             self.now_file = len(self.loaded_files) - 1
             return name_of_file
+        return None
 
     def load_file(self, name):
         self.loaded_files[self.now_file]['text'] = self.toPlainText()
@@ -54,8 +68,9 @@ class QCodeEdit(QPlainTextEdit):
             self.loaded_files[self.now_file]['path'], _ = \
                 QFileDialog.getSaveFileName(self, 'Save algorithm', '', filter='*.py')
 
+        print(self.loaded_files[self.now_file]['path'])
         if self.loaded_files[self.now_file]['path']:
-            if self.loaded_files[self.now_file]['path'][:-3] not in '.py':
+            if self.loaded_files[self.now_file]['path'][-3:] not in '.py':
                 self.loaded_files[self.now_file]['path'] += '.py'
 
             with open(self.loaded_files[self.now_file]['path'], 'w') as f:
