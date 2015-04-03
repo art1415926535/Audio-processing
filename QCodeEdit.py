@@ -38,7 +38,10 @@ class QCodeEdit(QPlainTextEdit):
 
     def open_file(self):
         if self.now_file is not None:
-            self.loaded_files[self.now_file]['text'] = self.toPlainText()
+            try:
+                self.loaded_files[self.now_file]['text'] = self.toPlainText()
+            except:
+                pass
         path, extension = QFileDialog.getOpenFileName(self, 'Open algorithm', '', filter='*.py')
         if path:
             with open(path, 'r') as f:
@@ -96,5 +99,6 @@ class QCodeEdit(QPlainTextEdit):
             self.load_file(self.loaded_files[self.now_file]['name'])
         else:
             self.setPlainText('Загрузите файл')  # FIXME создать новый файл
+            self.now_file = None
         return number
 
