@@ -8,6 +8,8 @@ import PyQt5.QtMultimedia as M
 import QPlots
 from syntax_pars import PythonHighlighter as Parser
 import QCodeEdit
+import icons
+
 
 
 class Window(QtWidgets.QWidget):
@@ -15,10 +17,8 @@ class Window(QtWidgets.QWidget):
         QtWidgets.QWidget.__init__(self, parent)
         uic.loadUi('gui_beat.ui', self)
         self.scene = QtWidgets.QGraphicsScene()
-        self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+        # self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         self.app = app
-
-
 
         # <player
         self.qt_player = M.QMediaPlayer()
@@ -52,22 +52,18 @@ class Window(QtWidgets.QWidget):
 
         self.choice_algorithm_box.currentTextChanged.connect(self.number_of_current_code_changed)
 
-        self.exit_button.clicked.connect(self.close)
-
-        self.fullscreen_button.clicked.connect(self.fullscreen)
-        self.windowed = True
+        # self.exit_button.clicked.connect(self.close)
+        #
+        # self.fullscreen_button.clicked.connect(self.fullscreen)
+        # self.windowed = True
 
     def perform_code(self):
         code = self.code_edit.toPlainText()
         plot = self.plots[self.code_edit.now_file]
-        exec(code)
-        print('END')
 
-    def perform_algorithm(self):
-        self.__thread = threading.Thread(target=self.perform_code)
         try:
-            self.__thread.start()
-        except:
+            exec(code)
+        except Exception:
             error = list(sys.exc_info())
             class_error = str(error[0])
             info = str(error[1]) + '\n' + str(error[2])
@@ -75,8 +71,13 @@ class Window(QtWidgets.QWidget):
             message_box = QtWidgets.QMessageBox()
             message_box.setWindowTitle(class_error)
             message_box.setText('\n' + info + '\n')
-            message_box.addButton('  Fuuuuuuuuuck  ', QtWidgets.QMessageBox.YesRole)
+            message_box.addButton('  FF  ', QtWidgets.QMessageBox.YesRole)
             message_box.exec_()
+
+    def perform_algorithm(self):
+        self.__thread = threading.Thread(target=self.perform_code)
+        self.__thread.start()
+
 
     def add_plot(self, name):
         self.choice_algorithm_box.addItem(name)
@@ -128,37 +129,36 @@ class Window(QtWidgets.QWidget):
 
             self.choice_algorithm_box.removeItem(number)
 
-
-    def fullscreen(self, full=False):
-        if self.windowed or full:
-            self.showFullScreen()
-            self.fullscreen_button.setIcon(QtGui.QIcon(
-                ':/fullscreen_exit_black/ic_fullscreen_exit_black_48dp.png'))
-            self.windowed = False
-        else:
-            self.showNormal()
-            self.fullscreen_button.setIcon(QtGui.QIcon(
-                ':/fullscreen_black/ic_fullscreen_black_48dp.png'))
-
-            self.windowed = True
-
-    def mousePressEvent(self, event):
-        self.offset = event.pos()
-
-    def mouseMoveEvent(self, event):
-        if event.globalY() < 20:
-            self.fullscreen(full=True)
-        if self.title_window_label.underMouse() and event.globalY() > 20:
-            x = event.globalX()
-            y = event.globalY()
-            x_w = self.offset.x()
-            y_w = self.offset.y()
-            self.move(x - x_w, y - y_w)
-
-            if self.offset.y() < 20:
-                self.fullscreen_button.setIcon(QtGui.QIcon(
-                    ':/fullscreen_black/ic_fullscreen_black_48dp.png'))
-                self.windowed = True
+    # def fullscreen(self, full=False):
+    #     if self.windowed or full:
+    #         self.showMaximized()
+    #         self.fullscreen_button.setIcon(QtGui.QIcon(
+    #             ':/fullscreen_exit_black/ic_fullscreen_exit_black_48dp.png'))
+    #         self.windowed = False
+    #     else:
+    #         self.showNormal()
+    #         self.fullscreen_button.setIcon(QtGui.QIcon(
+    #             ':/fullscreen_black/ic_fullscreen_black_48dp.png'))
+    #
+    #         self.windowed = True
+    #
+    # def mousePressEvent(self, event):
+    #     self.offset = event.pos()
+    #
+    # def mouseMoveEvent(self, event):
+    #     if event.globalY() < 20:
+    #         self.fullscreen(full=True)
+    #     if self.title_window_label.underMouse() and event.globalY() > 20:
+    #         x = event.globalX()
+    #         y = event.globalY()
+    #         x_w = self.offset.x()
+    #         y_w = self.offset.y()
+    #         self.move(x - x_w, y - y_w)
+    #
+    #         if self.offset.y() < 20:
+    #             self.fullscreen_button.setIcon(QtGui.QIcon(
+    #                 ':/fullscreen_black/ic_fullscreen_black_48dp.png'))
+    #             self.windowed = True
 
     # sssssssssssssssssssssssssssssssssPLAYERssssssssssssssssssssssssssssssssssssss
 
@@ -191,21 +191,23 @@ class Window(QtWidgets.QWidget):
         else:
             self.track = path
 
-        self.title_window_label.setText(self.track)
-
         for plot in self.plots:
             plot.update()
 
         print('play', self.track)
         url = C.QUrl.fromLocalFile(self.track)
+        print(url)
         content = M.QMediaContent(url)
-        self.qt_player.setMedia(content)
+        print(content.canonicalUrl())
 
         if self.play:
             self.qt_player.pause()
             self.play_pause_button.setIcon(QtGui.QIcon(
                 ':/color/ic_play_circle_fill_color_48dp.png'))
             self.play = False
+
+        self.qt_player.setMedia(content)
+        print(self.qt_player.mediaStatus())
 
     def play_pause(self):
         print("PLAY PAUSE")

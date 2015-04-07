@@ -1,0 +1,33 @@
+QCodeEdit = """
+QScrollBar:vertical {
+    border: none;
+    background: #eee;
+    width: 12px;
+}
+QScrollBar::handle:vertical {
+    background: #e0e0e0;
+    min-height: 20px;
+}
+
+QScrollBar:horizontal {
+    border: none;
+    background: #eee;
+    height: 12px;
+}
+
+QScrollBar::handle:horizontal {
+    background: #e0e0e0;
+    min-width: 20px;
+}
+
+QPlainTextEdit{
+  font-family:'Consolas';
+  color: #333;
+  background-color: qlineargradient(spread:reflect, x1:0, y1:0.642, x2:0, y2:0, stop:0.847458
+    rgba(243, 243, 243, 255), stop:1 rgba(189, 189, 189, 255));
+}
+"""
+
+
+def qplots(background):
+    return 'border: none; background-color:{}'.format(background)
