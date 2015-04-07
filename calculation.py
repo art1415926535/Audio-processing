@@ -33,18 +33,18 @@ def cepstrum(array):
 
 
 def energy(array, size_chunk):
-    list_energy = list()
+    list_energy = []
     for i in range(len(array) // size_chunk):
         l = array[i * size_chunk:i * size_chunk + size_chunk]
         list_energy.append(root_mean_square(l))
-    l = list()
+    l = []
     for i in range(len(list_energy) - 1):
         l.append(sum(list_energy[i:i + 2]) / 2)
     return l
 
 
 def derivative(array):
-    d = list()
+    d = []
     for i in range(len(array) - 1):
         d.append(array[i + 1] - array[i])
     return d
@@ -52,7 +52,7 @@ def derivative(array):
 
 def max_value(array, size_chunk):
     array = abs(array)
-    maximum = list()
+    maximum = []
     for i in range(len(array) // size_chunk):
         maximum.append(max(array[i * size_chunk:i * size_chunk + size_chunk]))
 
@@ -85,3 +85,11 @@ def max_value(array, size_chunk):
     print('Count: ', count)
 
     return array
+
+
+def envelope(array, size_chunk):
+    maximums = []
+    for i in range(len(array) // size_chunk):
+        maximums.append(max(array[i * size_chunk:i * size_chunk + size_chunk]))
+    return maximums
+

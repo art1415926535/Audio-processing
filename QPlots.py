@@ -175,6 +175,7 @@ class Plot2d(GraphicsLayoutWidget):
         self.data = []
         self.__percent = 0
 
+
     @property
     def percent(self):
         return self.__percent

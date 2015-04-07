@@ -26,7 +26,9 @@ class QCodeEdit(QPlainTextEdit):
             self.loaded_files[self.now_file]['text'] = self.toPlainText()
         import datetime
 
-        code = "from wave_pars import Wave\nimport calculation\n\nwave = Wave('music\The Game.wav')\n"
+        with open('default.py', 'r') as f:
+            code = f.read()
+
         self.loaded_files.append({'name': 'Algorithm {}'.format(len(self.loaded_files)),
                                   'path': None,
                                   'text': '# {date}\n{code}'.format(
