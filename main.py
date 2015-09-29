@@ -1,113 +1,95 @@
+import os
 import logging
 import threading
 
-from PyQt5 import QtGui, QtCore, uic, QtWidgets
-import PyQt5.QtCore as C
-import PyQt5.QtMultimedia as M
+from PyQt5 import uic, QtWidgets
 
-import QPlots
-from syntax_pars import PythonHighlighter as Parser
-import QCodeEdit
-import icons
+from qt_widgets.syntax_pars import PythonHighlighter as Parser
+from qt_widgets import q_code_edit, q_plots, q_player
+from user_interface import gui
 
 
+class Window(QtWidgets.QWidget, q_player.QPlayer, gui.UiForm):
+    def __init__(self, parent=None):
 
-class Window(QtWidgets.QWidget):
-    def __init__(self, app, parent=None):
         QtWidgets.QWidget.__init__(self, parent)
-        uic.loadUi('gui_beat.ui', self)
-        self.scene = QtWidgets.QGraphicsScene()
-        # self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
-        self.app = app
-
-        # <player
-        self.qt_player = M.QMediaPlayer()
-        self.qt_player.setNotifyInterval(100)
-
-        self.play = False
-        self.track = 'music/The Game.mp3'
-
-        self.qt_player.positionChanged.connect(self.pos_changed)
-
-        self.track_slider.valueChanged.connect(self.rewind_mouse)
-        # />
-
-        # <plots
-        self.plots = []
-        # />
-
-        self.play_pause_button.clicked.connect(self.play_pause)
-        self.open_file_button.clicked.connect(self.load)
-
-        self.code_edit = QCodeEdit.QCodeEdit()
-
+        gui.UiForm.__init__(self, self)
+        # uic.loadUi(os.path.join('user_interface', 'gui_beat.ui'), self)
+        self.code_edit = q_code_edit.QCodeEdit()
+        with open(os.path.join(".settings", 'q_code_edit.stylesheets')) as f:
+            self.code_edit.setStyleSheet(f.read())
         self.layout_for_QCodeEdit.addWidget(self.code_edit)
         self.highlights = Parser(self.code_edit.document())
-
-        self.perform_algorithm_button.clicked.connect(self.perform_algorithm)
+        self.perform_algorithm_button.clicked.connect(self.start_thread_of_script)
         self.new_code_button.clicked.connect(self.new_file)
         self.save_code_button.clicked.connect(self.save_file)
         self.open_code_button.clicked.connect(self.open_file)
         self.del_code_button.clicked.connect(self.close_file)
-
         self.choice_algorithm_box.currentTextChanged.connect(self.number_of_current_code_changed)
 
-        # self.exit_button.clicked.connect(self.close)
-        #
-        # self.fullscreen_button.clicked.connect(self.fullscreen)
-        # self.windowed = True
+        q_player.QPlayer.__init__(self)
+        self.qt_player.positionChanged.connect(self.position_changed)
+        self.track_slider.valueChanged.connect(self.rewind_mouse)
+        self.play_pause_button.clicked.connect(self.play_and_pause)
+        self.open_file_button.clicked.connect(self.load_file)
 
-    def perform_code(self):
-        code = self.code_edit.toPlainText()
+        self.scene = QtWidgets.QGraphicsScene()
+        self.plots = []
+
+    def start_thread_of_script(self):
+        thread = threading.Thread(target=self.running_script)
+        thread.start()
+
+    def running_script(self):
+        code = self.code_edit.toPlainText().format(wav=self.track)
         plot = self.plots[self.code_edit.now_file]
-
         try:
+            logging.info('Start script execution.')
             exec(code)
+            logging.info('The end of the script.')
         except Exception:
-            error = list(sys.exc_info())
-            class_error = str(error[0])
-            info = str(error[1]) + '\n' + str(error[2])
+            error = [str(i) for i in sys.exc_info()]
+            logging.warning('Runtime error: {}'.format(" | ".join(error)))
 
-            message_box = QtWidgets.QMessageBox()
-            message_box.setWindowTitle(class_error)
-            message_box.setText('\n' + info + '\n')
-            message_box.addButton('  FF  ', QtWidgets.QMessageBox.YesRole)
-            message_box.exec_()
-
-    def perform_algorithm(self):
-        self.__thread = threading.Thread(target=self.perform_code)
-        self.__thread.start()
-
+            # TODO: does not respond message box and main window
+            # message_box.setWindowTitle(error[0])
+            # message_box.setText(error[1])
+            # message_box.setDetailedText(error[2])
+            # message_box.show()
 
     def add_plot(self, name):
         self.choice_algorithm_box.addItem(name)
         self.choice_algorithm_box.setCurrentIndex(self.choice_algorithm_box.count() - 1)
 
         message_box = QtWidgets.QMessageBox()
-        message_box.setText('\n' + '2D?' + '\n')
-        message_box.addButton('2d', QtWidgets.QMessageBox.YesRole)
-        message_box.addButton('3d', QtWidgets.QMessageBox.NoRole)
-        if message_box.exec_() == 1:
-            self.plots.append(QPlots.Plot3dTest())
+        message_box.setText('\n' + 'Choose type of graph' + '\n')
+        message_box.addButton('2D', QtWidgets.QMessageBox.YesRole)
+        message_box.addButton('3D', QtWidgets.QMessageBox.NoRole)
+        if message_box.exec_():
+            self.plots.append(q_plots.Plot3dTest())
+            logging.info('Add 3D graph')
         else:
-            self.plots.append(QPlots.Plot2d(name=name))
+            self.plots.append(q_plots.Plot2d(name=name))
+            logging.info('Add 2D graph')
 
         self.plots_layout.addWidget(self.plots[-1])
         self.plots[-1].set_data()
 
     def number_of_current_code_changed(self, s):
         if self.plots:
-            print(s)
+            self.code_edit.cache_file()
             self.code_edit.load_file(s)
 
     def new_file(self):
         name = self.code_edit.new_file()
         self.add_plot(name)
+        logging.info('Create new file and add plot: {}'.format(name))
 
     def open_file(self):
         name = self.code_edit.open_file()
         if name is not None:
             self.add_plot(name)
+            logging.info('Open file and add plot: {}'.format(name))
 
     def save_file(self):
         self.code_edit.save_file()
@@ -115,13 +97,16 @@ class Window(QtWidgets.QWidget):
     def close_file(self):
         if self.plots:
             save_text = "Save the algorithm?"
-            reply = QtWidgets.QMessageBox.question(self, 'Save',
+            reply = QtWidgets.QMessageBox.question(self,
+                                                   'Save',
                                                    save_text,
                                                    QtWidgets.QMessageBox.Yes,
                                                    QtWidgets.QMessageBox.No)
 
             if reply == QtWidgets.QMessageBox.Yes:
                 self.save_file()
+            else:
+                logging.info("File has NOT been saved.")
 
             number = self.code_edit.close_file()
             self.plots_layout.takeAt(number).widget().deleteLater()
@@ -129,123 +114,18 @@ class Window(QtWidgets.QWidget):
 
             self.choice_algorithm_box.removeItem(number)
 
-    # def fullscreen(self, full=False):
-    #     if self.windowed or full:
-    #         self.showMaximized()
-    #         self.fullscreen_button.setIcon(QtGui.QIcon(
-    #             ':/fullscreen_exit_black/ic_fullscreen_exit_black_48dp.png'))
-    #         self.windowed = False
-    #     else:
-    #         self.showNormal()
-    #         self.fullscreen_button.setIcon(QtGui.QIcon(
-    #             ':/fullscreen_black/ic_fullscreen_black_48dp.png'))
-    #
-    #         self.windowed = True
-    #
-    # def mousePressEvent(self, event):
-    #     self.offset = event.pos()
-    #
-    # def mouseMoveEvent(self, event):
-    #     if event.globalY() < 20:
-    #         self.fullscreen(full=True)
-    #     if self.title_window_label.underMouse() and event.globalY() > 20:
-    #         x = event.globalX()
-    #         y = event.globalY()
-    #         x_w = self.offset.x()
-    #         y_w = self.offset.y()
-    #         self.move(x - x_w, y - y_w)
-    #
-    #         if self.offset.y() < 20:
-    #             self.fullscreen_button.setIcon(QtGui.QIcon(
-    #                 ':/fullscreen_black/ic_fullscreen_black_48dp.png'))
-    #             self.windowed = True
-
-    # sssssssssssssssssssssssssssssssssPLAYERssssssssssssssssssssssssssssssssssssss
-
-    def pos_changed(self):
-        self.rewind(self.qt_player.position())
-        for plot in self.plots:
-            plot.update(self.qt_player.position() / self.qt_player.duration())
-
-    def rewind(self, x):
-        if not self.track_slider.isSliderDown():
-            self.time_of_track_label.setText(str(x // 1000))  # millisec > sec
-            self.track_slider.setValue(x / self.qt_player.duration() * self.track_slider.maximum())
-
-    def rewind_mouse(self, x):
-        maximum = self.track_slider.maximum()
-        duration = self.qt_player.duration()
-        d_pos = x / maximum * duration
-
-        if not (d_pos - maximum / 20) < self.qt_player.position() < (d_pos + maximum / 20):
-            self.qt_player.setPosition(d_pos)
-            print(d_pos, self.qt_player.position())
-            print(self.play)
-
-    def load(self, path):
-        self.play_pause_button.setEnabled(True)
-
-        path, extension = QtWidgets.QFileDialog.getOpenFileName(self, 'Open file', '')
-        if not path:
-            logging.warning('НЕ УКАЗАН ПУТЬ К ФАЙЛУ')
-        else:
-            self.track = path
-
-        for plot in self.plots:
-            plot.update()
-
-        print('play', self.track)
-        url = C.QUrl.fromLocalFile(self.track)
-        print(url)
-        content = M.QMediaContent(url)
-        print(content.canonicalUrl())
-
-        if self.play:
-            self.qt_player.pause()
-            self.play_pause_button.setIcon(QtGui.QIcon(
-                ':/color/ic_play_circle_fill_color_48dp.png'))
-            self.play = False
-
-        self.qt_player.setMedia(content)
-        print(self.qt_player.mediaStatus())
-
-    def play_pause(self):
-        print("PLAY PAUSE")
-        if self.play:
-            self.qt_player.pause()
-            self.play_pause_button.setIcon(QtGui.QIcon(
-                ':/color/ic_play_circle_fill_color_48dp.png'))
-        else:
-            self.qt_player.play()
-            self.play_pause_button.setIcon(QtGui.QIcon(
-                ':/color/ic_pause_circle_fill_color_48dp.png'))
-
-        self.play = not self.play
-
-        # xxxxxxxxxxxxxxxxxxxxxxxxxxxxxPLAYERxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-
-        # try:
-        # exec(s)
-        #
-        # with open('algorithms/{}.py'.format(str(i)), 'w') as f:
-        #         f.write(self.editors[i].toPlainText())
-        # except:
-        #     error = list(sys.exc_info())
-        #     class_error = str(error[0])
-        #     info = str(error[1]) + '\n' + str(error[2])
-        #
-        #     message_box = QtWidgets.QMessageBox()
-        #     message_box.setWindowTitle(class_error)
-        #     message_box.setText('\n' + info + '\n')
-        #     message_box.addButton('  Fuuuuuuuuuck  ', QtWidgets.QMessageBox.YesRole)
-        #     message_box.exec_()
-
 
 if __name__ == "__main__":
-    import sys
+    logging.basicConfig(
+        filename='.log',
+        format='%(module)-10s LINE:%(lineno)-3d %(levelname)-8s [%(asctime)s]  %(message)s',
+        level=logging.INFO)
+    logging.info("Start logging")
 
+    import sys
     app = QtWidgets.QApplication(sys.argv)
-    window = Window(app)
+    window = Window()
     window.show()
     app.exec()
+
+    logging.info('End logging\n')
