@@ -1,7 +1,9 @@
+import logging
+import os
+
 import PyQt5.QtCore as Core
 import PyQt5.QtMultimedia as Multimedia
 from PyQt5 import QtWidgets, QtGui
-import logging
 
 
 class QPlayer():
@@ -39,6 +41,7 @@ class QPlayer():
 
         logging.info('Open ' + path)
         self.track = path
+        self.setWindowTitle(os.path.basename(self.track))
         self.play_pause_button.setEnabled(True)
         url = Core.QUrl.fromLocalFile(self.track)
         content = Multimedia.QMediaContent(url)
