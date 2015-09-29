@@ -42,10 +42,9 @@ class Window(QtWidgets.QWidget, q_player.QPlayer, gui.UiForm):
 
     def running_script(self):
         code = self.code_edit.toPlainText().format(wav=self.track)
-        plot = self.plots[self.code_edit.now_file]
         try:
             logging.info('Start script execution.')
-            exec(code)
+            exec(code, {"plot": self.plots[self.code_edit.now_file]})
             logging.info('The end of the script.')
         except Exception:
             error = [str(i) for i in sys.exc_info()]
