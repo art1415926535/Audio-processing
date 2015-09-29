@@ -1,0 +1,76 @@
+<RCC>
+    <qresource prefix="/folder_open_black">
+        <file>ic_folder_open_black_18dp.png</file>
+        <file>ic_folder_open_black_24dp.png</file>
+        <file>ic_folder_open_black_36dp.png</file>
+        <file>ic_folder_open_black_48dp.png</file>
+        <file>ic_folder_grey600_48dp.png</file>
+        <file>ic_save_grey600_48dp.png</file>
+    </qresource>
+    <qresource prefix="/folder_open_grey">
+        <file>ic_folder_open_grey600_18dp.png</file>
+        <file>ic_folder_open_grey600_24dp.png</file>
+        <file>ic_folder_open_grey600_36dp.png</file>
+        <file>ic_folder_open_grey600_48dp.png</file>
+    </qresource>
+    <qresource prefix="/folder_open_white">
+        <file>ic_folder_open_white_18dp.png</file>
+        <file>ic_folder_open_white_24dp.png</file>
+        <file>ic_folder_open_white_36dp.png</file>
+        <file>ic_folder_open_white_48dp.png</file>
+    </qresource>
+    <qresource prefix="/play_circle_fill_black">
+        <file>ic_play_circle_fill_black_18dp.png</file>
+        <file>ic_play_circle_fill_black_24dp.png</file>
+        <file>ic_play_circle_fill_black_36dp.png</file>
+        <file>ic_play_circle_fill_black_48dp.png</file>
+    </qresource>
+    <qresource prefix="/play_circle_fill_grey">
+        <file>ic_play_circle_fill_grey600_18dp.png</file>
+        <file>ic_play_circle_fill_grey600_24dp.png</file>
+        <file>ic_play_circle_fill_grey600_36dp.png</file>
+        <file>ic_play_circle_fill_grey600_48dp.png</file>
+    </qresource>
+    <qresource prefix="/play_circle_fill_white">
+        <file>ic_play_circle_fill_white_18dp.png</file>
+        <file>ic_play_circle_fill_white_24dp.png</file>
+        <file>ic_play_circle_fill_white_36dp.png</file>
+        <file>ic_play_circle_fill_white_48dp.png</file>
+    </qresource>
+    <qresource prefix="/pause_circle_fill_black">
+        <file>ic_pause_circle_fill_black_48dp.png</file>
+    </qresource>
+    <qresource prefix="/close_black">
+        <file>ic_close_black_48dp.png</file>
+    </qresource>
+    <qresource prefix="/fullscreen_black">
+        <file>ic_fullscreen_black_48dp.png</file>
+    </qresource>
+    <qresource prefix="/fullscreen_exit_black">
+        <file>ic_fullscreen_exit_black_48dp.png</file>
+    </qresource>
+    <qresource prefix="/time">
+        <file>ic_access_time_black_48dp.png</file>
+        <file>ic_access_time_gray_48dp.png</file>
+    </qresource>
+    <qresource prefix="/numbers">
+        <file>ic_filter_1_grey600_48dp.png</file>
+        <file>ic_filter_2_grey600_48dp.png</file>
+        <file>ic_filter_3_grey600_48dp.png</file>
+    </qresource>
+    <qresource prefix="/color">
+        <file>ic_add_circle_color_36dp.png</file>
+        <file>ic_pause_circle_fill_color_48dp.png</file>
+        <file>ic_play_circle_fill_color_48dp.png</file>
+        <file>ic_remove_circle_color_36dp.png</file>
+        <file>add_circle_green.png</file>
+        <file>ic_delete_color_48dp.png</file>
+        <file>ic_note_add_color_48dp.png</file>
+    </qresource>
+    <qresource prefix="/save">
+        <file>ic_save_grey600_48dp.png</file>
+    </qresource>
+    <qresource prefix="/open">
+        <file>ic_folder_grey600_48dp.png</file>
+    </qresource>
+</RCC>
